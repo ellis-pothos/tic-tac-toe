@@ -1,0 +1,42 @@
+.gameDisplay {
+    display: flex;
+    justify-content: center;
+    background-color: red;
+}
+
+.playerDisplay {
+    /* height: 150px; */
+    /* width: 200px; */
+    border-style: solid;
+    border-width: 2px;
+    background-color: white;
+    text-align: center;
+    align-items: center;
+}
+
+.gameDisplayDiv {
+    /* height: 150px; */
+    flex-grow: 1; 
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+    border-style: solid;
+    border-width: 2px;
+    background-color: white;
+}
+
+#gridContainer {
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-style: solid;
+    border-width: 1px;
+    justify-content: center;
+    align-items: center;
+}
+
+.gameButton {
+    width: auto;
+    height: 100px;
+}
