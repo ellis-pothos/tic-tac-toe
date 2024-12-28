@@ -24,28 +24,27 @@ const players = {
                 arrow1.style.filter = `invert(0%)`;
                 arrow2.style.filter = `invert(100%)`;
             }
-        } else {
+        } else if (players.gamePlayers.length < 2) {
             gameMessages.textContent = "not enough players";
+        } else {
+            gameMessages.textContent = "you cannot have more than two players";
+            players.gamePlayers.length = 2; 
         }
     },
 
     Player: function(input) {
-        let name = input.value;  
-        
+        let name = input.value;       
         let score = 0; 
-        let whichPlayer = "";
 
+        let whichPlayer = players.gamePlayers.length === 0 ? "player 1" : "player 2";
+            
         const addPlayer = () => 
             players.gamePlayers.push({name, score, whichPlayer});
-            if (players.gamePlayers.length === 0) {
-                whichPlayer = "player 1";
-            } else if (players.gamePlayers.length === 1) {
-                whichPlayer = "player 2";
-            };
+
         addPlayer();
         players.updatePlayers();
 
-        return { name, score, whichPlayer}
+        return { name, score }
     },
 
     whoGoesFirst: function() {
@@ -81,13 +80,20 @@ const players = {
 // game play module
 const playGame = (function () {    
     const newGame = () => {
-        gameBoard.gameBoardArray.length = 0;
+        gameBoard.gameBoardArray = [0, 1, 2, 3, 4, 5, 6, 7, 8];
         console.log(gameBoard.gameBoardArray);
         gameButtons.forEach(button => {
             button.style.backgroundColor = '';
         });
         players.whoGoesFirst();
     };
+
+    const resetMatch = () => {
+        players.gamePlayers[0].score = 0;
+        players.gamePlayers[1].score = 0;
+        playGame.updateScore();
+        players.updatePlayers();
+    }
 
     const updateScore = () => {
         scores.textContent = players.gamePlayers[0].score + " vs. " + players.gamePlayers[1].score;
@@ -135,7 +141,7 @@ const playGame = (function () {
             console.log("ERROR");
         }
     };
-    return { move, checkWinner, updateScore, newGame }; 
+    return { move, checkWinner, updateScore, newGame, resetMatch }; 
 })(); 
 
 // game display
@@ -172,10 +178,18 @@ container.classList.add("mainContainer");
                 submitButton.textContent = "Submit";
 
                     submitButton.addEventListener(`click`, () => {
-                        const firstPlayer = players.Player(player1Input);
-                        const secondPlayer = players.Player(player2Input);
-                        dialog.close();
-                        return firstPlayer, secondPlayer;
+                        if (players.gamePlayers.length === 0) {
+                            const firstPlayer = players.Player(player1Input);
+                            const secondPlayer = players.Player(player2Input);
+                            dialog.close();
+                            return firstPlayer, secondPlayer;
+                        } else {
+                            players.gamePlayers.length = 0;
+                            const firstPlayer = players.Player(player1Input);
+                            const secondPlayer = players.Player(player2Input);
+                            dialog.close();
+                            return firstPlayer, secondPlayer;
+                        }
                     })
 
                 playersForm.appendChild(player1Input);
@@ -253,10 +267,7 @@ container.classList.add("mainContainer");
         newGameContainer.appendChild(restartGame); 
 
             restartGame.addEventListener(`click`, () => {
-                players.gamePlayers[0].score = 0;
-                players.gamePlayers[1].score = 0;
-                playGame.updateScore();
-                players.updatePlayers();
+                playGame.resetMatch();
             }) 
 
     // gameboardArray as a grid 

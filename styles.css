@@ -16,11 +16,20 @@
     font-style: normal;
 }
 
+* {
+    /* border-style: solid;
+    border-width: 2px; */
+}
+
 body {
     box-sizing: border-box;
     font-family: "figtree";
     font-size: 13px;
     text-align: center;
+}
+
+button {
+    font-family: "figtree";
 }
 
 .gameDisplay {
@@ -32,8 +41,7 @@ body {
 .playerDisplay {
     /* height: 150px; */
     width: 200px;
-    border-style: solid;
-    border-width: 2px;
+
     background-color: rgb(255, 255, 255);
     text-align: center;
     align-items: center;
@@ -49,8 +57,6 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr;
-    border-style: solid;
-    border-width: 2px;
 }
 
 .arrows > img {
@@ -62,8 +68,6 @@ body {
 }
 
 .scores {
-    border-style: solid;
-    border-width: 1px;
     font-family: "tourney";
     font-size: 1.5rem;
 }
@@ -86,8 +90,6 @@ body {
     display: grid;
     grid-template-rows: 1fr 1fr 1fr;
     grid-template-columns: 1fr 1fr 1fr;
-    border-style: solid;
-    border-width: 1px;
     justify-content: center;
     align-items: center;
 }
