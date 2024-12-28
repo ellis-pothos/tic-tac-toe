@@ -73,8 +73,13 @@ body {
     height: 50px;
 }
 
-#restartGame {
+.newGameContainer {
     width: 100%;
+}
+
+#newGameButton,
+#restartGame {
+    width: 50%;
 }
 
 #gridContainer {

@@ -15,18 +15,28 @@ const players = {
             player1Div.textContent = player1.name;
             player2Div.textContent = player2.name;
             gameMessages.textContent = "";
-            arrow1.style.filter = `invert(100%)`;
+            players.whoGoesFirst();
+
+            if (players.whoseTurn === "player 1") {
+                arrow1.style.filter = `invert(100%)`;
+                arrow2.style.filter = `invert(0%)`;
+            } else if (players.whoseTurn === "player 2") {
+                arrow1.style.filter = `invert(0%)`;
+                arrow2.style.filter = `invert(100%)`;
+            }
         } else {
             gameMessages.textContent = "not enough players";
         }
     },
 
-    Player: function(name) {
+    Player: function(input) {
+        let name = input.value;  
+        
         let score = 0; 
         let whichPlayer = "";
 
         const addPlayer = () => 
-            players.gamePlayers.push({name, score, whichPlayer})
+            players.gamePlayers.push({name, score, whichPlayer});
             if (players.gamePlayers.length === 0) {
                 whichPlayer = "player 1";
             } else if (players.gamePlayers.length === 1) {
@@ -38,8 +48,17 @@ const players = {
         return { name, score, whichPlayer}
     },
 
-    whoseTurn: "player 1",
-    currentToken: "x",
+    whoGoesFirst: function() {
+        let x = Math.floor(Math.random() * 2);
+        console.log(x);
+        players.whoseTurn = x === 0 ? "player 1" : "player 2";
+        players.currentToken = players.whoseTurn === "player 1" ? "x" : "o";
+        alert("The first player has been randomly chosen!");
+        return players.whoseTurn, players.currentToken
+    },
+
+    whoseTurn: "",
+    currentToken: "",
 
     yourTurn: function() {        
         if (players.whoseTurn === "player 1") {
@@ -61,6 +80,15 @@ const players = {
 
 // game play module
 const playGame = (function () {    
+    const newGame = () => {
+        gameBoard.gameBoardArray.length = 0;
+        console.log(gameBoard.gameBoardArray);
+        gameButtons.forEach(button => {
+            button.style.backgroundColor = '';
+        });
+        players.whoGoesFirst();
+    };
+
     const updateScore = () => {
         scores.textContent = players.gamePlayers[0].score + " vs. " + players.gamePlayers[1].score;
     };
@@ -107,12 +135,59 @@ const playGame = (function () {
             console.log("ERROR");
         }
     };
-    return { move, checkWinner }; 
+    return { move, checkWinner, updateScore, newGame }; 
 })(); 
 
 // game display
 const container = document.querySelector("#container");
 container.classList.add("mainContainer"); 
+
+    const playersFormContainer = document.createElement("div");
+    playersFormContainer.id = "playersFormContainer";
+    container.appendChild(playersFormContainer);
+
+        const playersFormButton = document.createElement("button");
+        playersFormButton.id = "playersFormButton";
+        playersFormButton.textContent = "Enter players";
+        playersFormContainer.appendChild(playersFormButton);
+
+            const dialog = document.createElement("dialog");
+            playersFormContainer.appendChild(dialog);
+
+                const playersForm = document.createElement("form");
+                playersForm.id = "playersForm";
+
+                const player1Input = document.createElement("input");
+                player1Input.type = "text";
+                player1Input.name = "player 1 name";
+                player1Input.placeholder = "Enter the first player's name";
+
+                const player2Input = document.createElement("input");
+                player2Input.type = "text";
+                player2Input.name = "player 2 name";
+                player2Input.placeholder = "Enter the second player's name";
+                
+                const submitButton = document.createElement('button');
+                submitButton.type = "button";
+                submitButton.textContent = "Submit";
+
+                    submitButton.addEventListener(`click`, () => {
+                        const firstPlayer = players.Player(player1Input);
+                        const secondPlayer = players.Player(player2Input);
+                        dialog.close();
+                        return firstPlayer, secondPlayer;
+                    })
+
+                playersForm.appendChild(player1Input);
+                playersForm.appendChild(player2Input);
+                playersForm.appendChild(submitButton);
+
+            dialog.appendChild(playersForm);
+
+        playersFormButton.addEventListener(`click`, () => {
+            dialog.showModal();
+        });
+    
 
     // display for whose turn it is
     const gameDisplay = document.createElement("div");
@@ -138,7 +213,7 @@ container.classList.add("mainContainer");
 
             const scores = document.createElement("div");
             scores.classList.add("scores");
-            scores.textContent = " vs. ";
+            scores.textContent = "0 vs. 0";
             gamePlayDisplay.appendChild(scores);
 
             const rightArrow = document.createElement("div");
@@ -160,12 +235,29 @@ container.classList.add("mainContainer");
     container.appendChild(gameMessages);
 
 // add a button to restart the game from 0 for each player
-    const restartGame = document.createElement("button");
-    restartGame.id = "restartGame";
-    restartGame.textContent = "Restart all games"
-    container.appendChild(restartGame); 
+    const newGameContainer = document.createElement("div");
+    newGameContainer.classList.add("newGameContainer");
+    container.appendChild(newGameContainer);
 
-        restartGame.addEventListener(`click`) 
+        const newGameButton = document.createElement("button");
+        newGameButton.id = "newGameButton";
+        newGameButton.textContent = "New game!"; 
+            newGameButton.addEventListener(`click`, () => {
+                playGame.newGame();
+            })
+        newGameContainer.appendChild(newGameButton);
+
+        const restartGame = document.createElement("button");
+        restartGame.id = "restartGame";
+        restartGame.textContent = "Restart the match";
+        newGameContainer.appendChild(restartGame); 
+
+            restartGame.addEventListener(`click`, () => {
+                players.gamePlayers[0].score = 0;
+                players.gamePlayers[1].score = 0;
+                playGame.updateScore();
+                players.updatePlayers();
+            }) 
 
     // gameboardArray as a grid 
     const gridContainer = document.createElement("div");
@@ -174,39 +266,80 @@ container.classList.add("mainContainer");
 
         const button0 = document.createElement("button");
         button0.classList.add("gameButton"); 
+        button0.data = {
+            index: 0,
+        }
         gridContainer.appendChild(button0);
 
         const button1 = document.createElement("button");
         button1.classList.add("gameButton"); 
+        button1.data = {
+            index: 1,
+        }
         gridContainer.appendChild(button1);
 
         const button2 = document.createElement("button");
         button2.classList.add("gameButton"); 
+        button2.data = {
+            index: 2,
+        }
         gridContainer.appendChild(button2);
 
         const button3 = document.createElement("button");
         button3.classList.add("gameButton"); 
+        button3.data = {
+            index: 3,
+        }
         gridContainer.appendChild(button3);
 
         const button4 = document.createElement("button");
         button4.classList.add("gameButton"); 
+        button4.data = {
+            index: 4,
+        }
         gridContainer.appendChild(button4);
 
         const button5 = document.createElement("button");
         button5.classList.add("gameButton"); 
+        button5.data = {
+            index: 5,
+        }
         gridContainer.appendChild(button5);
 
         const button6 = document.createElement("button");
         button6.classList.add("gameButton"); 
+        button6.data = {
+            index: 6,
+        }
         gridContainer.appendChild(button6);
 
         const button7 = document.createElement("button");
         button7.classList.add("gameButton"); 
+        button7.data = {
+            index: 7,
+        }
         gridContainer.appendChild(button7);
 
         const button8 = document.createElement("button");
         button8.classList.add("gameButton"); 
+        button8.data = {
+            index: 8,
+        }
         gridContainer.appendChild(button8);
+
+        const gameButtons = document.querySelectorAll('.gameButton'); 
+        gameButtons.forEach(button => {
+            button.addEventListener(`click`, () => {
+                let where = button.data.index;
+                if (players.whoseTurn === "player 1") {
+                    button.style.backgroundColor = "blue";
+                    playGame.move(where);
+                } else if (players.whoseTurn === "player 2") {
+                    button.style.backgroundColor = "red";
+                    playGame.move(where);
+                }
+            })
+        })
     
     // add a form for user input so players can give their names and select their tokens
         // (try having different, tokens? but the game logic only knows those tokens as being either X or O)
