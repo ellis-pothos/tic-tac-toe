@@ -18,11 +18,13 @@ const players = {
             players.whoGoesFirst();
 
             if (players.whoseTurn === "player 1") {
-                arrow1.style.filter = `invert(100%)`;
-                arrow2.style.filter = `invert(0%)`;
+                highlightArrow(arrow1);
+                // arrow1.style.filter = `invert(100%)`;
+                // arrow2.style.filter = `invert(0%)`;
             } else if (players.whoseTurn === "player 2") {
-                arrow1.style.filter = `invert(0%)`;
-                arrow2.style.filter = `invert(100%)`;
+                highlightArrow(arrow2);
+                // arrow1.style.filter = `invert(0%)`;
+                // arrow2.style.filter = `invert(100%)`;
             }
         } else if (players.gamePlayers.length < 2) {
             gameMessages.textContent = "not enough players";
@@ -62,14 +64,18 @@ const players = {
     yourTurn: function() {        
         if (players.whoseTurn === "player 1") {
             players.whoseTurn = "player 2";
-            arrow1.style.filter = `invert(0%)`;
-            arrow2.style.filter = `invert(100%)`;
+            highlightArrow(arrow1);
+            highlightArrow(arrow2);
+            // arrow1.style.filter = `invert(0%)`;
+            // arrow2.style.filter = `invert(100%)`;
             players.currentToken = "o";
 
         } else if (players.whoseTurn === "player 2") {
             players.whoseTurn = "player 1";
-            arrow1.style.filter = `invert(100%)`;
-            arrow2.style.filter = `invert(0%)`;
+            highlightArrow(arrow1);
+            highlightArrow(arrow2);
+            // arrow1.style.filter = `invert(100%)`;
+            // arrow2.style.filter = `invert(0%)`;
             players.currentToken = "x";
         }
         console.log(players.whoseTurn + "'s turn")
@@ -85,14 +91,24 @@ const playGame = (function () {
         gameButtons.forEach(button => {
             button.style.backgroundColor = '';
         });
-        players.whoGoesFirst();
+        if (players.whoseTurn === "player 1") {
+            highlightArrow(arrow1);
+            // arrow1.style.filter = `invert(100%)`;
+            // arrow2.style.filter = `invert(0%)`;
+        } else if (players.whoseTurn === "player 2") {
+            highlightArrow(arrow2);
+            // arrow1.style.filter = `invert(0%)`;
+            // arrow2.style.filter = `invert(100%)`;
+        };
+        players.updatePlayers();
+        // players.whoGoesFirst();
     };
 
     const resetMatch = () => {
         players.gamePlayers[0].score = 0;
         players.gamePlayers[1].score = 0;
         playGame.updateScore();
-        players.updatePlayers();
+        playGame.newGame();
     }
 
     const updateScore = () => {
@@ -166,12 +182,12 @@ container.classList.add("mainContainer");
                 const player1Input = document.createElement("input");
                 player1Input.type = "text";
                 player1Input.name = "player 1 name";
-                player1Input.placeholder = "Enter the first player's name";
+                player1Input.placeholder = "Enter first player's name";
 
                 const player2Input = document.createElement("input");
                 player2Input.type = "text";
                 player2Input.name = "player 2 name";
-                player2Input.placeholder = "Enter the second player's name";
+                player2Input.placeholder = "Enter second player's name";
                 
                 const submitButton = document.createElement('button');
                 submitButton.type = "button";
@@ -221,7 +237,7 @@ container.classList.add("mainContainer");
             leftArrow.classList.add("arrows");
                 const arrow1 = document.createElement("img");
                 arrow1.id = "leftArrow";
-                arrow1.src = "arrow.svg";
+                arrow1.src = "arrow.png";
                 leftArrow.appendChild(arrow1);
             gamePlayDisplay.appendChild(leftArrow);
 
@@ -234,11 +250,15 @@ container.classList.add("mainContainer");
             rightArrow.classList.add("arrows");
                 const arrow2 = document.createElement("img");
                 arrow2.id = "rightArrow";
-                arrow2.src = "arrow.svg";
+                arrow2.src = "arrow.png";
                 rightArrow.appendChild(arrow2);
             gamePlayDisplay.appendChild(rightArrow);
 
-        const player2Div = document.createElement("div");
+            const highlightArrow = function(arrow) {
+                arrow.classList.toggle("arrowOn");
+            }
+        
+            const player2Div = document.createElement("div");
         player2Div.classList.add("playerDisplay");
         player2Div.textContent = "";
         gameDisplay.appendChild(player2Div);
@@ -255,7 +275,7 @@ container.classList.add("mainContainer");
 
         const newGameButton = document.createElement("button");
         newGameButton.id = "newGameButton";
-        newGameButton.textContent = "New game!"; 
+        newGameButton.textContent = "New game"; 
             newGameButton.addEventListener(`click`, () => {
                 playGame.newGame();
             })
@@ -343,10 +363,10 @@ container.classList.add("mainContainer");
             button.addEventListener(`click`, () => {
                 let where = button.data.index;
                 if (players.whoseTurn === "player 1") {
-                    button.style.backgroundColor = "blue";
+                    button.style.backgroundColor = "black";
                     playGame.move(where);
                 } else if (players.whoseTurn === "player 2") {
-                    button.style.backgroundColor = "red";
+                    button.style.backgroundColor = "grey";
                     playGame.move(where);
                 }
             })

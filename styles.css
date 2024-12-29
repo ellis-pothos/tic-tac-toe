@@ -17,41 +17,98 @@
 }
 
 * {
+    box-sizing: border-box;
     /* border-style: solid;
     border-width: 2px; */
 }
 
+:root {
+    --light_grey: rgb(221, 221, 221);
+    --light_blue: rgb(122, 200, 255);
+    --light_yellow: rgb(255, 217, 0);
+}
+
 body {
-    box-sizing: border-box;
+    margin: 0px;
+
     font-family: "figtree";
     font-size: 13px;
     text-align: center;
+
+    animation: 
+    pulse 3s ease infinite alternate;
 }
 
 button {
     font-family: "figtree";
+    background-color: white;
+    padding: 5px 15px 5px 15px;
+    border-style: none;
+    border-radius: 15px;
+    box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.4),
+    0px 7px 13px -3px rgba(0,0,0,0.3),
+    0px -3px 0px 0px rgba(0,0,0,0.2) inset;
+    margin: 5px;
+}
+
+@keyframes pulse {
+    0% {
+      background-color: #001F3F;
+    }
+    100% {
+      background-color: #8f0000;
+    }
+}
+
+.mainContainer {
+    min-width: 770px; 
+    max-width: 870px;
+}
+
+#playersFormContainer {
+    margin-top: 15px;
+}
+
+#playersFormButton {
+    background-color: black;
+    color: white; 
+}
+
+dialog {
+    width: 70%; 
+}
+
+input {
+    margin: 15px; 
+    width: 30%;
 }
 
 .gameDisplay {
     display: flex;
     justify-content: center;
-    background-color: rgb(195, 251, 253);
+    margin: 15px;
 }
 
 .playerDisplay {
     /* height: 150px; */
     width: 200px;
-
     background-color: rgb(255, 255, 255);
+    border-radius: 15px;
+
     text-align: center;
     align-items: center;
     font-family: "tourney";
-    font-size: 2rem;
+    font-size: 2.5rem;
     text-transform: lowercase;
+    padding-top: 7px;
 }
 
 .gameDisplayDiv {
     /* height: 150px; */
+    /* background-color: var(--light_blue); */
+    border-radius: 10px;
+    padding: 10px; 
+
     flex-grow: 1; 
 
     display: grid;
@@ -61,7 +118,15 @@ button {
 
 .arrows > img {
     width: 50px;
+    filter: invert(100%); 
 }
+
+.arrowOn {
+    border-style: dashed;
+    border-color: rgb(0, 115, 255); 
+    border-width: 3px;
+}
+
 
 #leftArrow {
     transform: rotate(180deg);
@@ -69,32 +134,43 @@ button {
 
 .scores {
     font-family: "tourney";
-    font-size: 1.5rem;
+    font-size: 2rem;
+    padding-top: 5px;
+    color: white;
 }
 
 .gameMessages {
     width: 100%;
-    height: 50px;
+    height: 3rem;
+    padding: 7px; 
+    font-size: 1.5rem;
+    color: white;
 }
 
 .newGameContainer {
+    display: flex;
+    justify-content: center;
     width: 100%;
+    margin-bottom: 10px;
 }
 
 #newGameButton,
 #restartGame {
-    width: 50%;
+    width: 20%;
+    background-color: var(--light_grey);
 }
 
 #gridContainer {
     display: grid;
-    grid-template-rows: 1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: repeat(3, 100px);
+    grid-template-columns: repeat(3, minmax(100px, 200px));
+    gap: 10px; 
     justify-content: center;
     align-items: center;
 }
 
 .gameButton {
-    width: auto;
-    height: 100px;
+    width: 100%;
+    height: 100%;
+    margin: 0px; 
 }
